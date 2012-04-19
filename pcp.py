@@ -2,17 +2,22 @@
 
 """ PayLane card authorisation proxy module """
 
+import sys
+
+if sys.version_info[:2] != (2, 7):
+    print >> sys.stderr, 'You must use Python version 2.7'
+    sys.exit(1)
+
+import ConfigParser
 import SocketServer
 import argparse
+import base64
 import json
 import logging
-import urlparse
-import sys
 import os
 import os.path as p
-import ConfigParser
-import base64
 import socket
+import urlparse
 
 from OpenSSL import SSL
 from SimpleHTTPServer import SimpleHTTPRequestHandler
