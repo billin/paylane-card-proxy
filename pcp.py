@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" PayLane card authorisation proxy module """
+''' PayLane Card Authorisation Proxy Server '''
 
 import sys
 
@@ -63,13 +63,13 @@ class TCPServer(SocketServer.TCPServer):
 class PCPHandler(SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         global logger
-        logger.info("%s - - [%s] %s" % (self.address_string(), 
+        logger.info('%s - - [%s] %s' % (self.address_string(), 
             self.log_date_time_string(), format % args))
 
     def setup(self):
         self.connection = self.request
-        self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
-        self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
+        self.rfile = socket._fileobject(self.request, 'rb', self.rbufsize)
+        self.wfile = socket._fileobject(self.request, 'wb', self.wbufsize)
 
     def do_response(self, code, status, body=None):
         body = body or status
@@ -183,7 +183,7 @@ class PCPHandler(SimpleHTTPRequestHandler):
         if parsed.path == '/auth':
             self.do_response(500, 'Authorize via POST only', '')
         else:
-            self.do_response(404, "Not found", "{ 'ERROR': 'Page not found', 'PATH': '%s' }" % self.path)
+            self.do_response(404, 'Not found', "{ 'ERROR': 'Page not found', 'PATH': '%s' }" % self.path)
 
 class SecureHTTPServer(HTTPServer):
     def __init__(self, server_address, HandlerClass):
@@ -204,8 +204,8 @@ class SecureHTTPServer(HTTPServer):
 def serve_http(port):
     global logger
     Handler = PCPHandler
-    httpd = SecureHTTPServer(("", port), Handler)
-    logger.info("Serving HTTPS at port %d", port)
+    httpd = SecureHTTPServer(('', port), Handler)
+    logger.info('Serving HTTPS at port %d', port)
 
     try:
         httpd.serve_forever()
@@ -219,9 +219,9 @@ def exit(code):
     global logger
     logging.shutdown()
     if logger:
-        logger.info("Exiting.")
+        logger.info('Exiting.')
     else:
-        print >> sys.stderr, "Exiting."
+        print >> sys.stderr, 'Exiting.'
     sys.exit(code)
 
 default_config = '~/.pcp.cfg'
@@ -353,5 +353,5 @@ def main():
 
     serve_http(args.port)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
