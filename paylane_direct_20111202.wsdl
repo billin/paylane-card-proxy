@@ -1,0 +1,1408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	SVN: $Id: Direct.wsdl 12422 2011-11-09 16:10:32Z wpetriczek $
+-->
+<wsdl:definitions
+	name="Direct"
+	targetNamespace="http://www.paylane.com/Direct.wsdl"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://www.paylane.com/Direct.wsdl"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsd2="http://www.paylane.com/Direct.xsd2">
+	<wsdl:types>
+		<xsd:schema
+			targetNamespace="http://www.paylane.com/Direct.xsd2"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			xmlns:xsd2="http://www.paylane.com/Direct.xsd2">
+			<xsd:complexType name="get_sale_result_response_ok">
+				<xsd:choice>
+					<xsd:element
+						name="id_sale"
+						type="xsd:unsignedLong" />
+					<xsd:element
+						name="id_sale_error"
+						type="xsd:unsignedLong" />
+				</xsd:choice>
+			</xsd:complexType>
+			<xsd:complexType name="sale_response_ok">
+				<xsd:choice>
+					<xsd:element
+						name="id_sale"
+						type="xsd:unsignedLong" />
+					<xsd:element
+						name="id_sale_authorization"
+						type="xsd:unsignedLong" />
+				</xsd:choice>
+			</xsd:complexType>
+			<xsd:complexType name="sale_recurring_response_ok">
+				<xsd:sequence>
+					<xsd:element
+						name="id_sale"
+						type="xsd:unsignedLong" />
+					<xsd:choice>
+					<xsd:element
+						name="id_paypal_recurring"
+						type="xsd:unsignedLong" />
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_sale_response_ok">
+				<xsd:all>
+					<xsd:element
+						name="id_paypal_checkout"
+						type="xsd:unsignedLong" />
+					<xsd:element
+						name="redirect_url"
+						type="xsd:string" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_stop_recurring_response_ok">
+				<xsd:all>
+					<xsd:element
+						name="id_paypal_recurring"
+						type="xsd:unsignedLong" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="sale_response_data">
+				<xsd:all>
+					<xsd:element
+						name="fraud_score"
+						type="xsd:decimal"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="avs_result"
+						type="xsd:string"
+						minOccurs="0"
+						maxOccurs="1" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="refund_response_ok">
+				<xsd:all>
+					<xsd:element
+						name="id_refund"
+						type="xsd:unsignedLong"
+						minOccurs="1"
+						maxOccurs="1" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="capture_sale_response_ok">
+				<xsd:all>
+					<xsd:element
+						name="id_sale"
+						type="xsd:unsignedLong"
+						minOccurs="1"
+						maxOccurs="1" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="close_sale_authorization_response_ok">
+				<xsd:all>
+					<xsd:element
+						name="is_closed"
+						type="xsd:boolean"
+						minOccurs="1"
+						maxOccurs="1" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="shared_response_error">
+				<xsd:all>
+					<xsd:element
+						name="error_number"
+						type="xsd:unsignedInt"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="error_description"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="processor_error_number"
+						type="xsd:string"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="processor_error_description"
+						type="xsd:string"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="id_error"
+						type="xsd:unsignedLong"
+						minOccurs="0"
+						maxOccurs="1" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="sale_params">
+				<xsd:all>
+					<xsd:element
+						name="card_number"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="card_expiration_month"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="card_expiration_year"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="card_issue_number"
+						type="xsd:string"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="card_code"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="name_on_card"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="cardholder_name"
+						type="xsd:string"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="cardholder_email"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="cardholder_address"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="cardholder_city"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="cardholder_zip"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="cardholder_state"
+						type="xsd:string"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="cardholder_country"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="amount"
+						type="xsd:decimal"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="currency"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="description"
+						type="xsd:string"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="client_ip"
+						type="xsd:string"
+						minOccurs="1"
+						maxOccurs="1" />
+					<xsd:element
+						name="fraud_check_on"
+						type="xsd:boolean"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="avs_check_level"
+						type="xsd:nonNegativeInteger"
+						minOccurs="0"
+						maxOccurs="1" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="multi_sale_params">
+				<xsd:all>
+					<xsd:element name="payment_method">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element name="card_data">
+									<xsd:complexType>
+										<xsd:all>
+											<xsd:element name="card_number">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="13" />
+														<xsd:maxLength
+															value="19" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="card_code">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="3" />
+														<xsd:maxLength
+															value="4" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element
+												name="expiration_month">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:length value="2" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element
+												name="expiration_year">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:length value="4" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element
+												name="issue_number"
+												minOccurs="0"
+												maxOccurs="1">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="1" />
+														<xsd:maxLength
+															value="3" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="name_on_card">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="2" />
+														<xsd:maxLength
+															value="50" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element
+												name="secure3d"
+												minOccurs="0"
+												maxOccurs="1">
+												<xsd:complexType>
+													<xsd:all>
+														<xsd:element
+															name="id_secure3d_auth"
+															type="xsd:unsignedLong" />
+													</xsd:all>
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:all>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="account_data">
+									<xsd:complexType>
+										<xsd:all>
+											<xsd:element
+												name="account_country">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="2" />
+														<xsd:maxLength
+															value="2" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element
+												name="bank_code"
+												minOccurs="0"
+												maxOccurs="1">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="5" />
+														<xsd:maxLength
+															value="8" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element
+												name="account_number">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="1" />
+														<xsd:maxLength
+															value="11" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element
+												name="account_holder">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="2" />
+														<xsd:maxLength
+															value="30" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+										</xsd:all>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element
+						name="capture_later"
+						type="xsd:boolean"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="fraud_check_on"
+						type="xsd:boolean"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element
+						name="avs_check_level"
+						type="xsd:nonNegativeInteger"
+						minOccurs="0"
+						maxOccurs="1" />
+					<xsd:element name="customer">
+						<xsd:complexType>
+							<xsd:all>
+								<xsd:element
+									name="name"
+									minOccurs="0">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:minLength value="2" />
+											<xsd:maxLength value="50" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="email">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:minLength value="6" />
+											<xsd:maxLength value="80" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="ip">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:length value="15" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="address">
+									<xsd:complexType>
+										<xsd:all>
+											<xsd:element name="street_house">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="2" />
+														<xsd:maxLength
+															value="46" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="city">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="2" />
+														<xsd:maxLength
+															value="40" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element
+												name="state"
+												minOccurs="0">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="2" />
+														<xsd:maxLength
+															value="40" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="zip">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:minLength
+															value="1" />
+														<xsd:maxLength
+															value="9" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="country_code">
+												<xsd:simpleType>
+													<xsd:restriction
+														base="xsd:string">
+														<xsd:length value="2" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+										</xsd:all>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:all>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="amount">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:decimal">
+								<xsd:fractionDigits value="2" />
+								<xsd:totalDigits value="12" />
+								<xsd:minExclusive value="0" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="currency_code">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:length value="3" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element
+						name="processing_date"
+						minOccurs="0">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="10" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>					
+					<xsd:element name="product">
+						<xsd:complexType>
+							<xsd:choice>
+								<xsd:element
+									name="description"
+									minOccurs="0">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="200" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+							</xsd:choice>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_sale_params">
+				<xsd:all>
+					<xsd:element
+						name="currency_code"
+						minOccurs="0">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="3" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element
+						name="description"
+						minOccurs="0">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="200" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="amount">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:decimal">
+								<xsd:fractionDigits value="2" />
+								<xsd:totalDigits value="12" />
+								<xsd:minExclusive value="0" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element
+						name="return_url"
+						minOccurs="0">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="255" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element
+						name="cancel_url"
+						minOccurs="0">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="255" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element
+						name="error_url"
+						minOccurs="0">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:maxLength value="255" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element
+						name="authorization"
+						minOccurs="0"
+						type="xsd:boolean">
+					</xsd:element>
+					<xsd:element
+						name="recurring"
+						minOccurs="0">
+						<xsd:complexType>
+							<xsd:all>
+								<xsd:element name="start_date">
+									<xsd:simpleType>
+										<xsd:restriction
+											base="xsd:string">
+											<xsd:minLength
+												value="10" />
+											<xsd:maxLength
+												value="10" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element name="amount">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:decimal">
+											<xsd:fractionDigits value="2" />
+											<xsd:totalDigits value="12" />
+											<xsd:minExclusive value="0" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element
+									name="period"
+									minOccurs="0">
+									<xsd:simpleType>
+										<xsd:restriction
+											base="xsd:string">
+											<xsd:minLength
+												value="2" />
+											<xsd:maxLength
+												value="12" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+							</xsd:all>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_sale_response">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:element
+							name="OK"
+							type="xsd2:paypal_sale_response_ok" />
+						<xsd:element
+							name="ERROR"
+							type="xsd2:shared_response_error" />
+					</xsd:choice>
+					<xsd:element
+						name="DATA"
+						type="xsd2:sale_response_data"
+						minOccurs="0"
+						maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_get_sale_id_params">
+					<xsd:all>
+						<xsd:element
+							name="id_paypal_checkout"
+							type="xsd:unsignedInt" />
+					</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_get_sale_id_response">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:element
+							name="OK"
+							type="xsd2:sale_recurring_response_ok" />
+						<xsd:element
+							name="ERROR"
+							type="xsd2:shared_response_error" />
+					</xsd:choice>
+					<xsd:element
+						name="DATA"
+						type="xsd2:sale_response_data"
+						minOccurs="0"
+						maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_get_sale_authorization_id_response">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:element
+							name="OK"
+							type="xsd2:sale_response_ok" />
+						<xsd:element
+							name="ERROR"
+							type="xsd2:shared_response_error" />
+					</xsd:choice>
+					<xsd:element
+						name="DATA"
+						type="xsd2:sale_response_data"
+						minOccurs="0"
+						maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_recurring_response_ok">
+				<xsd:all>
+					<xsd:element
+						name="id_sale"
+						type="xsd:unsignedInt" />
+					<xsd:element
+						name="date"
+						type="xsd:string" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="paypal_id_recurring_response">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:element
+							name="OK"
+							type="xsd2:paypal_stop_recurring_response_ok" />
+						<xsd:element
+							name="ERROR"
+							type="xsd2:shared_response_error" />
+					</xsd:choice>
+					<xsd:element
+						name="DATA"
+						type="xsd2:sale_response_data"
+						minOccurs="0"
+						maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="sale_response">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:element
+							name="OK"
+							type="xsd2:sale_response_ok" />
+						<xsd:element
+							name="ERROR"
+							type="xsd2:shared_response_error" />
+					</xsd:choice>
+					<xsd:element
+						name="DATA"
+						type="xsd2:sale_response_data"
+						minOccurs="0"
+						maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="refund_response">
+				<xsd:choice>
+					<xsd:element
+						name="OK"
+						type="xsd2:refund_response_ok" />
+					<xsd:element
+						name="ERROR"
+						type="xsd2:shared_response_error" />
+				</xsd:choice>
+			</xsd:complexType>
+			<xsd:complexType name="capture_sale_response">
+				<xsd:choice>
+					<xsd:element
+						name="OK"
+						type="xsd2:capture_sale_response_ok" />
+					<xsd:element
+						name="ERROR"
+						type="xsd2:shared_response_error" />
+				</xsd:choice>
+			</xsd:complexType>
+			<xsd:complexType name="close_sale_authorization_response">
+				<xsd:choice>
+					<xsd:element
+						name="OK"
+						type="xsd2:close_sale_authorization_response_ok" />
+					<xsd:element
+						name="ERROR"
+						type="xsd2:shared_response_error" />
+				</xsd:choice>
+			</xsd:complexType>
+			<xsd:complexType name="check_sales_params">
+				<xsd:sequence>
+					<xsd:element
+						name="id_sale_list"
+						type="xsd:unsignedLong"
+						minOccurs="1"
+						maxOccurs="100" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="sale_status">
+				<xsd:all>
+					<xsd:element
+						name="id_sale"
+						type="xsd:unsignedLong" />
+					<xsd:element
+						name="status"
+						type="xsd:string" />
+					<xsd:element
+						name="is_refund"
+						type="xsd:boolean" />
+					<xsd:element
+						name="is_chargeback"
+						type="xsd:boolean" />
+					<xsd:element
+						name="is_reversal"
+						type="xsd:boolean" />
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="sale_status_list">
+				<xsd:sequence>
+					<xsd:element
+						name="sale_status"
+						type="xsd2:sale_status"
+						minOccurs="1"
+						maxOccurs="100" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="check_sales_response">
+				<xsd:choice>
+					<xsd:element
+						name="OK"
+						type="xsd2:sale_status_list" />
+					<xsd:element
+						name="ERROR"
+						type="xsd2:shared_response_error" />
+				</xsd:choice>
+			</xsd:complexType>			
+			<xsd:complexType name="check_3dsecure_response">
+				<xsd:choice>
+					<xsd:element
+						name="OK"
+						type="xsd2:check_3dsecure_data" />
+					<xsd:element
+						name="ERROR"
+						type="xsd2:shared_response_error" />
+				</xsd:choice>
+			</xsd:complexType>
+			<xsd:complexType name="check_3dsecure_data">
+				<xsd:all>
+					<xsd:element
+						name="is_card_enrolled"
+						type="xsd:boolean" />
+					<xsd:element name="secure3d_data">
+						<xsd:complexType>
+							<xsd:all>
+								<xsd:element
+									name="id_secure3d_auth"
+									type="xsd:unsignedLong" />
+								<xsd:element
+									name="id_secure3d_auth_hash"
+									minOccurs="0"
+									maxOccurs="1">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:minLength value="40" />
+											<xsd:maxLength value="40" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+								<xsd:element
+									name="paylane_url"
+									minOccurs="0"
+									maxOccurs="1">
+									<xsd:simpleType>
+										<xsd:restriction base="xsd:string">
+											<xsd:maxLength value="256" />
+										</xsd:restriction>
+									</xsd:simpleType>
+								</xsd:element>
+							</xsd:all>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:all>
+			</xsd:complexType>
+			<xsd:complexType name="get_sale_result_response">
+				<xsd:choice>
+					<xsd:element
+						name="OK"
+						type="xsd2:get_sale_result_response_ok" />
+					<xsd:element
+						name="ERROR"
+						type="xsd2:shared_response_error" />
+				</xsd:choice>
+			</xsd:complexType>	
+			<xsd:complexType name="paypal_recurring_response">
+				<xsd:choice>
+					<xsd:element
+						name="OK"
+						type="xsd2:paypal_recurring_response_ok" />
+					<xsd:element
+						name="ERROR"
+						type="xsd2:shared_response_error" />
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="saleRequest">
+		<wsdl:part
+			name="params"
+			type="xsd2:sale_params" />
+	</wsdl:message>
+	<wsdl:message name="saleResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:sale_response" />
+	</wsdl:message>
+	<wsdl:message name="multiSaleRequest">
+		<wsdl:part
+			name="params"
+			type="xsd2:multi_sale_params" />
+	</wsdl:message>
+	<wsdl:message name="multiSaleResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:sale_response" />
+	</wsdl:message>
+	<wsdl:message name="paypalSaleRequest">
+		<wsdl:part
+			name="params"
+			type="xsd2:paypal_sale_params" />
+	</wsdl:message>
+	<wsdl:message name="paypalSaleResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:paypal_sale_response" />
+	</wsdl:message>
+	<wsdl:message name="paypalGetSaleIdRequest">
+		<wsdl:part
+			name="id_paypal_checkout"
+			type="xsd:unsignedInt" />
+	</wsdl:message>
+	<wsdl:message name="paypalGetSaleIdResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:paypal_get_sale_id_response" />
+	</wsdl:message>
+	<wsdl:message name="paypalGetSaleAuthorizationIdRequest">
+		<wsdl:part
+			name="id_paypal_checkout"
+			type="xsd:unsignedInt" />
+	</wsdl:message>
+	<wsdl:message name="paypalGetSaleAuthorizationIdResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:paypal_get_sale_authorization_id_response" />
+	</wsdl:message>
+	<wsdl:message name="paypalStopRecurringRequest">
+		<wsdl:part
+			name="id_paypal_recurring"
+			type="xsd:unsignedInt" />
+	</wsdl:message>
+	<wsdl:message name="paypalStopRecurringResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:paypal_id_recurring_response" />
+	</wsdl:message>
+	<wsdl:message name="refundRequest">
+		<wsdl:part
+			name="id_sale"
+			type="xsd:unsignedLong" />
+		<wsdl:part
+			name="amount"
+			type="xsd:decimal" />
+		<wsdl:part
+			name="reason"
+			type="xsd:string" />
+	</wsdl:message>
+	<wsdl:message name="refundResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:refund_response" />
+	</wsdl:message>
+	<wsdl:message name="resaleRequest">
+		<wsdl:part
+			name="id_sale"
+			type="xsd:unsignedLong" />
+		<wsdl:part
+			name="amount"
+			type="xsd:decimal" />
+		<wsdl:part
+			name="currency"
+			type="xsd:string" />
+		<wsdl:part
+			name="description"
+			type="xsd:string" />
+		<wsdl:part
+			name="card_code"
+			type="xsd:string" />
+		<wsdl:part
+			name="processing_date"
+			type="xsd:string" />
+		<wsdl:part
+			name="resale_by_authorization"
+			type="xsd:boolean" />			
+	</wsdl:message>
+	<wsdl:message name="resaleResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:sale_response" />
+	</wsdl:message>
+	<wsdl:message name="captureSaleRequest">
+		<wsdl:part
+			name="id_sale_authorization"
+			type="xsd:unsignedLong" />
+		<wsdl:part
+			name="amount"
+			type="xsd:decimal" />
+		<wsdl:part
+			name="description"
+			type="xsd:string" />
+	</wsdl:message>
+	<wsdl:message name="captureSaleResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:capture_sale_response" />
+	</wsdl:message>
+	<wsdl:message name="closeSaleAuthorizationRequest">
+		<wsdl:part
+			name="id_sale_authorization"
+			type="xsd:unsignedLong" />
+	</wsdl:message>
+	<wsdl:message name="closeSaleAuthorizationResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:close_sale_authorization_response" />
+	</wsdl:message>
+	<wsdl:message name="checkSalesRequest">
+		<wsdl:part
+			name="checkSalesRequest"
+			type="xsd2:check_sales_params" />
+	</wsdl:message>
+	<wsdl:message name="checkSalesResponse">
+		<wsdl:part
+			name="checkSalesResponse"
+			type="xsd2:check_sales_response" />
+	</wsdl:message>
+	<wsdl:message name="checkCard3DSecureEnrollmentRequest">
+		<wsdl:part
+			name="params"
+			type="xsd2:multi_sale_params" />
+		<wsdl:part
+			name="back_url"
+			type="xsd:string" />
+	</wsdl:message>
+	<wsdl:message name="checkCard3DSecureEnrollmentResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:check_3dsecure_response" />
+	</wsdl:message>
+	<wsdl:message name="getSaleResultRequest">
+		<wsdl:part
+			name="amount"
+			type="xsd:decimal" />
+		<wsdl:part
+			name="description"
+			type="xsd:string" />
+	</wsdl:message>
+	<wsdl:message name="getSaleResultResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:get_sale_result_response" />
+	</wsdl:message>
+	<wsdl:message name="checkLastPayPalRecurringSaleRequest">
+	<wsdl:part
+			name="id_paypal_recurring"
+			type="xsd:unsignedInt" />
+	</wsdl:message>
+	<wsdl:message name="checkLastPayPalRecurringSaleResponse">
+		<wsdl:part
+			name="response"
+			type="xsd2:paypal_recurring_response" />
+	</wsdl:message>
+	<wsdl:message name="saleBy3DSecureAuthorizationRequest">
+	<wsdl:part
+			name="id_secure3d_auth"
+			type="xsd:unsignedLong" />
+	</wsdl:message>
+	<wsdl:message name="saleBy3DSecureAuthorizationResponse">
+	<wsdl:part
+			name="response"
+			type="xsd2:sale_response" />
+	</wsdl:message>	
+	<wsdl:portType name="DirectPortType">
+		<wsdl:operation name="sale">
+			<wsdl:input message="tns:saleRequest" />
+			<wsdl:output message="tns:saleResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="multiSale">
+			<wsdl:input message="tns:multiSaleRequest" />
+			<wsdl:output message="tns:multiSaleResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="paypalSale">
+			<wsdl:input message="tns:paypalSaleRequest" />
+			<wsdl:output message="tns:paypalSaleResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="paypalAuthorization">
+			<wsdl:input message="tns:paypalSaleRequest" />
+			<wsdl:output message="tns:paypalSaleResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="paypalGetSaleId">
+			<wsdl:input message="tns:paypalGetSaleIdRequest" />
+			<wsdl:output message="tns:paypalGetSaleIdResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="paypalGetSaleAuthorizationId">
+			<wsdl:input message="tns:paypalGetSaleIdRequest" />
+			<wsdl:output message="tns:paypalGetSaleAuthorizationIdResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="paypalStopRecurring">
+			<wsdl:input message="tns:paypalStopRecurringRequest" />
+			<wsdl:output message="tns:paypalStopRecurringResponse" />
+		</wsdl:operation>
+		<wsdl:operation
+			name="refund"
+			parameterOrder="id_sale amount reason">
+			<wsdl:input message="tns:refundRequest" />
+			<wsdl:output message="tns:refundResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="resale">
+			<wsdl:input message="tns:resaleRequest" />
+			<wsdl:output message="tns:resaleResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="captureSale">
+			<wsdl:input message="tns:captureSaleRequest" />
+			<wsdl:output message="tns:captureSaleResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="closeSaleAuthorization">
+			<wsdl:input message="tns:closeSaleAuthorizationRequest" />
+			<wsdl:output message="tns:closeSaleAuthorizationResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="checkSales">
+			<wsdl:input message="tns:checkSalesRequest" />
+			<wsdl:output message="tns:checkSalesResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="checkCard3DSecureEnrollment">
+			<wsdl:input message="tns:checkCard3DSecureEnrollmentRequest" />
+			<wsdl:output message="tns:checkCard3DSecureEnrollmentResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="getSaleResult">
+			<wsdl:input message="tns:getSaleResultRequest" />
+			<wsdl:output message="tns:getSaleResultResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="checkLastPayPalRecurringSale">
+			<wsdl:input message="tns:checkLastPayPalRecurringSaleRequest" />
+			<wsdl:output message="tns:checkLastPayPalRecurringSaleResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="saleBy3DSecureAuthorization">
+			<wsdl:input message="tns:saleBy3DSecureAuthorizationRequest" />
+			<wsdl:output message="tns:saleBy3DSecureAuthorizationResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding
+		name="DirectBinding"
+		type="tns:DirectPortType">
+		<soap:binding
+			style="rpc"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="sale">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/sale" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="params" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="checkLastPayPalRecurringSale">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/checkLastPayPalRecurringSale" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="id_paypal_recurring" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="multiSale">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/multiSale" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="params" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="paypalSale">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/paypalSale" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="params" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="paypalAuthorization">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/paypalAuthorization" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="params" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="paypalGetSaleId">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/paypalGetSaleId" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="id_paypal_checkout" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="paypalGetSaleAuthorizationId">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/paypalGetSaleAuthorizationId" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="id_paypal_checkout" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>	
+		<wsdl:operation name="paypalStopRecurring">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/paypalStopRecurring" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="id_paypal_recurring" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="refund">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/refund" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="id_sale amount reason" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="resale">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/resale" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="id_sale amount currency description card_code processing_date resale_by_authorization" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="captureSale">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/captureSale" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="id_sale_authorization amount description" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="closeSaleAuthorization">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/closeSaleAuthorization" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="id_sale_authorization" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="checkSales">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/checkSales" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="checkSalesRequest" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="checkSalesResponse" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="checkCard3DSecureEnrollment">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/checkCard3DSecureEnrollment" />
+			<wsdl:input>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="params back_url" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body
+					use="literal"
+					namespace="http://www.paylane.com/Direct.wsdl"
+					parts="response" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getSaleResult">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/getSaleResult" />
+				<wsdl:input>
+					<soap:body
+						use="literal"
+						namespace="http://www.paylane.com/Direct.wsdl"
+						parts="amount description" />
+				</wsdl:input>
+				<wsdl:output>
+					<soap:body
+						use="literal"
+						namespace="http://www.paylane.com/Direct.wsdl"
+						parts="response" />
+				</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="saleBy3DSecureAuthorization">
+			<soap:operation
+				soapAction="http://www.paylane.com/Direct.wsdl/saleBy3DSecureAuthorization" />
+				<wsdl:input>
+					<soap:body
+						use="literal"
+						namespace="http://www.paylane.com/Direct.wsdl"
+						parts="id_secure3d_auth" />
+				</wsdl:input>
+				<wsdl:output>
+					<soap:body
+						use="literal"
+						namespace="http://www.paylane.com/Direct.wsdl"
+						parts="response" />
+				</wsdl:output>
+		</wsdl:operation>		
+	</wsdl:binding>
+	<wsdl:service name="Direct">
+		<wsdl:port
+			name="DirectPort"
+			binding="tns:DirectBinding">
+			<soap:address
+				location="https://direct.paylane.com/soapserver/direct.php" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
