@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-''' PayLane Card Authorisation Proxy Server '''
+'''PayLane Card Authorisation Proxy Server'''
 
 import sys
 
@@ -23,7 +23,12 @@ from OpenSSL import SSL
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
 
+## globals
+logger = None
+client = None
 tld = p.dirname(p.realpath(__file__))
+default_config = '~/.pcp.cfg'
+default_port = 8080
 
 def relpath(f):
     return p.join(tld, f)
@@ -37,7 +42,7 @@ from suds.client import Client
 from suds.transport.http import HttpAuthenticated
 from passlib.apache import HtpasswdFile
 
-
+## utils
 class SOAPEncoder(json.JSONEncoder):
     def default(self, o):
        try:
@@ -48,8 +53,6 @@ class SOAPEncoder(json.JSONEncoder):
            return dict(iterable)
        return JSONEncoder.default(self, o) 
 
-logger = None
-client = None
 
 def htpasswd_check(user, pwd, pfile):
     return HtpasswdFile(pfile).verify(user, pwd)
@@ -57,10 +60,39 @@ def htpasswd_check(user, pwd, pfile):
 def decode_resp(r):
     return json.dumps(r, cls=SOAPEncoder, sort_keys=True, indent=2)
 
-class TCPServer(SocketServer.TCPServer):
-    allow_reuse_address = True 
+def exit(code):
+    global logger
+    logging.shutdown()
+    if logger:
+        logger.info('Exiting.')
+    else:
+        print >> sys.stderr, 'Exiting.'
+    sys.exit(code)
+
+def croak(string):
+    global logger
+    logger.error(string)
+    exit(1)
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='PayLane Card Proxy. Copyright (c) Billin Sp. z o.o. 2012. All rights reserved.')
+    parser.add_argument('-c', dest='config', type=str, help='Configuration file (default: %s)' % default_config,
+            default=default_config)
+    parser.add_argument('-p', dest='port', type=int, help='Port number')
+    parser.add_argument('-d', dest='daemonize', action='store_true', help='Deamonize process after start')
+    parser.add_argument('-l', dest='logfile', type=str, help='Log file')
+    parser.add_argument('-v', dest='debug', action='store_const', const='True', default='False', help='Log file')
+    parser.add_argument('--pid', dest='pidfile', type=str, help='Pid file')
+    parser.add_argument('--plu', dest='paylane_user', type=str, help='Paylane user name')
+    parser.add_argument('--ppf', dest='paylane_pass_f', type=str, help='Paylane password file')
+    parser.add_argument('--wsdl', dest='paylane_wsdl', type=str, help='Paylane wsdl URL')
+    parser.add_argument('--sslcrtkey', type=str, help='SSL certificate')
+    parser.add_argument('--htpasswdf', type=str, help='HTTP authorization file (htpasswd format)')
+    parser.add_argument('--certpassf', type=str, help='SSL certificate password file')
+    return parser.parse_args()
 
 class PCPHandler(SimpleHTTPRequestHandler):
+    '''Main proxy request handler class'''
     def log_message(self, format, *args):
         global logger
         logger.info('%s - - [%s] %s' % (self.address_string(), 
@@ -211,44 +243,6 @@ def serve_http(port):
         httpd.serve_forever()
     except KeyboardInterrupt:
         exit(0)
-
-# TODO
-# http log to handler
-
-def exit(code):
-    global logger
-    logging.shutdown()
-    if logger:
-        logger.info('Exiting.')
-    else:
-        print >> sys.stderr, 'Exiting.'
-    sys.exit(code)
-
-default_config = '~/.pcp.cfg'
-default_port = 8080
-
-def croak(string):
-    global logger
-    logger.error(string)
-    exit(1)
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='PayLane Card Proxy. Copyright (c) Billin Sp. z o.o. 2012. All rights reserved.')
-    parser.add_argument('-c', dest='config', type=str, help='Configuration file (default: %s)' % default_config,
-            default=default_config)
-    parser.add_argument('-p', dest='port', type=int, help='Port number')
-    parser.add_argument('-d', dest='daemonize', action='store_true', help='Deamonize process after start')
-    parser.add_argument('-l', dest='logfile', type=str, help='Log file')
-    parser.add_argument('-v', dest='debug', action='store_const', const='True', default='False', help='Log file')
-    parser.add_argument('--pid', dest='pidfile', type=str, help='Pid file')
-    parser.add_argument('--plu', dest='paylane_user', type=str, help='Paylane user name')
-    parser.add_argument('--ppf', dest='paylane_pass_f', type=str, help='Paylane password file')
-    parser.add_argument('--wsdl', dest='paylane_wsdl', type=str, help='Paylane wsdl URL')
-    parser.add_argument('--sslcrtkey', type=str, help='SSL certificate')
-    parser.add_argument('--htpasswdf', type=str, help='HTTP authorization file (htpasswd format)')
-    parser.add_argument('--certpassf', type=str, help='SSL certificate password file')
-    return parser.parse_args()
 
 def main():
     global config, logger, client
