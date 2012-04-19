@@ -225,8 +225,7 @@ class SecureHTTPServer(HTTPServer):
         fpem = relpath(config.get('PCP', 'ssl_cert_and_key_file'))
         ctx.use_privatekey_file (fpem)
         ctx.use_certificate_file(fpem)
-        self.socket = SSL.Connection(ctx, socket.socket(self.address_family,
-                                                        self.socket_type))
+        self.socket = SSL.Connection(ctx, socket.socket(self.address_family, self.socket_type))
         self.server_bind()
         self.server_activate()
 
