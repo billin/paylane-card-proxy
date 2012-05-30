@@ -27,7 +27,7 @@ from BaseHTTPServer import HTTPServer
 logger = None
 client = None
 tld = p.dirname(p.realpath(__file__))
-default_config = './.pcp.cfg'
+default_config = './pcp.cfg'
 default_port = 9080
 
 def relpath(f):
