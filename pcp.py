@@ -81,7 +81,7 @@ def parse_args():
     parser.add_argument('-p', dest='port', type=int, help='Port number')
     parser.add_argument('-d', dest='daemonize', action='store_true', help='Deamonize process after start')
     parser.add_argument('-l', dest='logfile', type=str, help='Log file')
-    parser.add_argument('-v', dest='debug', action='store_const', const='True', default='False', help='Log file')
+    parser.add_argument('-v', dest='debug', action='store_const', const='True', default='False', help='Debugging output')
     parser.add_argument('--pid', dest='pidfile', type=str, help='Pid file')
     parser.add_argument('--plu', dest='paylane_user', type=str, help='Paylane user name')
     parser.add_argument('--ppf', dest='paylane_pass_f', type=str, help='Paylane password file')
